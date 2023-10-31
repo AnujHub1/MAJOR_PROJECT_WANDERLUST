@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
-const ejsMate = require("ejs-Mate");
+const ejsMate = require("ejs-mate");
 const wrapAsync = require("./Util/wrapAsync.js");
 const ExpressError = require("./Util/ExpressError.js");
 const { listingSchema, reviewSchema } = require("./schema.js");
@@ -27,9 +27,8 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
-
-const dbUrl = process.env.ATLAS_DB;
+//const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const DB_URL = process.env.ATLAS_DB;
 
 main()
   .then(() => {
@@ -40,20 +39,19 @@ main()
   });
 
 async function main() {
- await mongoose.connect(dbUrl);
+ await mongoose.connect(DB_URL);
 }
 
-
-
+app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.engine("ejs", ejsMate);
+
 app.use(express.static(path.join(__dirname, "/public")));
 
 const store = MongoStore.create({
-  mongoUrl:dbUrl,
+  mongoUrl:DB_URL,
   crypto:{
     secret:process.env.SECRET,
   },
